@@ -1,0 +1,31 @@
+---
+version: "3.4"
+
+services:
+  valheim-server:
+    image: lloesche/valheim-server
+    container_name: valheim-server
+    environment:
+      - SERVER_NAME=${SERVER_NAME:?}
+      - WORLD_NAME=${WORLD_NAME:?}
+      - SERVER_PASS=${SERVER_PASS:?}
+      - SERVER_PUBLIC=false
+      - BACKUPS_MAX_AGE=3
+      - BACKUPS_MAX_COUNT=3
+      - BACKUPS_IF_IDLE=false
+      - TZ=${WORLD_NAME:-Europe/Stockholm}
+    expose:
+      - 2456
+      - 2457
+    volumes:
+      - valheim-config:/config
+      - valheim-data:/opt/valheim
+    networks:
+      - apps
+
+volumes:
+  valheim-config:
+  valheim-data:
+networks:
+  apps:
+    external: true

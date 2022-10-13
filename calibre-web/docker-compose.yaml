@@ -1,0 +1,30 @@
+---
+version: '3.5'
+
+services:
+  calibre-web:
+    image: lscr.io/linuxserver/calibre-web:latest
+    container_name: calibre-web
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - TZ=${TZ:-Europe/Stockholm}
+      - DOCKER_MODS=ghcr.io/linuxserver/mods:universal-calibre  # Enable ebook conversion
+    volumes:
+      - /books:/books
+      - config:/config
+    networks:
+      - apps
+    expose:
+      - 8083
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.calibre.entrypoints=websecure'
+      - 'traefik.http.routers.calibre.middlewares=authelia@docker'
+
+volumes:
+  config:
+
+networks:
+  apps:
+    external: true

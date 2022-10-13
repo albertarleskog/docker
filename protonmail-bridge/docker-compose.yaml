@@ -1,0 +1,22 @@
+---
+version: '3'
+
+services:
+  protonmail-bridge:
+    image: shenxn/protonmail-bridge:latest
+    container_name: protonmail-bridge
+    volumes:
+      - protonmail:/root
+    networks:
+      - apps
+    ports:
+      - 1025:25
+      - 1143:143
+    restart: unless-stopped
+
+networks:
+  apps:
+    external: true
+volumes:
+  protonmail:
+    external: true

@@ -1,0 +1,28 @@
+---
+version: '3'
+
+services:
+  tautulli:
+    image: ghcr.io/tautulli/tautulli
+    container_name: tautulli
+    volumes:
+      - config:/config
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - TZ=${TZ:-Europe/Stockholm}
+    expose:
+      - 8181
+    networks:
+      - apps
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.tautulli.entrypoints=websecure
+      - traefik.http.routers.tautulli.middlewares=authelia@docker
+
+volumes:
+  config:
+
+networks:
+  apps:
+    external: true

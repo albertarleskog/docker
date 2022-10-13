@@ -1,0 +1,50 @@
+---
+version: '3.3'
+
+services:
+  traefik:
+    image: traefik:v2.8.5
+    container_name: traefik
+    command:
+      - --api
+      - --log=true
+      - --log.level=INFO
+      - --api.insecure=false
+      - --providers.docker=true
+      - --providers.docker.network=apps
+      - --providers.docker.exposedByDefault=false
+      - --providers.docker.defaultRule=Host(`{{ index .Labels "com.docker.compose.service" }}.${DOMAIN:?}`)
+      - --providers.file=true
+      - --providers.file.directory=/file
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --certificatesresolvers.tls.acme.email=${EMAIL:?}
+      - --certificatesresolvers.tls.acme.storage=/letsencrypt/acme.json
+      - --certificatesresolvers.tls.acme.tlschallenge=true
+      - --certificatesresolvers.tls.acme.caserver=${CASERVER:?}
+      - --entrypoints.websecure.http.tls=true
+      - --entrypoints.websecure.http.tls.certResolver=tls
+      - --accessLog.filePath=/var/log/traefik/access.log
+      - --accessLog.filters.statusCodes=400-498
+      - --accessLog.bufferingsize=100
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - apps
+    volumes:
+      - /run/docker.sock:/var/run/docker.sock:ro
+      - /var/log/traefik:/var/log/traefik
+      - letsencrypt:/letsencrypt
+      - file:/file
+
+volumes:
+  letsencrypt:
+  file:
+
+networks:
+  apps:
+    external: true

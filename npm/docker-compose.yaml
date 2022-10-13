@@ -1,0 +1,23 @@
+---
+version: '3'
+
+services:
+  app:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: npm
+    restart: unless-stopped
+    ports:
+      - '80:80'  # HTTP
+      - '81:81'  # WebUI
+      - '443:443'  # HTTPS
+    volumes:
+      - data:/data
+      - letsencrypt:/etc/letsencrypt
+    networks:
+      - apps
+networks:
+  apps:
+    external: true
+volumes:
+  data:
+  letsencrypt:

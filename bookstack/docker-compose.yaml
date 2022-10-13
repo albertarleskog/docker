@@ -1,0 +1,50 @@
+---
+version: "3"
+
+services:
+  bookstack:
+    image: lscr.io/linuxserver/bookstack
+    container_name: bookstack
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - APP_URL=https://bookstack.${DOMAIN:?}
+      - TZ=${TZ:-Europe/Stockholm}
+      - DB_HOST=db
+      - DB_USER=bookstack
+      - DB_PASS=${DB_PASS:-yourdbpass}
+      - DB_DATABASE=bookstackapp
+      - GITHUB_APP_ID=${GITHUB_APP_ID:?}
+      - GITHUB_APP_SECRET=${GITHUB_APP_SECRET:?}
+    volumes:
+      - config:/config
+    expose:
+      - 80
+    depends_on:
+      - db
+    networks:
+      - apps
+      - bookstack
+  db:
+    image: lscr.io/linuxserver/mariadb
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - MYSQL_ROOT_PASSWORD=${DB_PASS:-yourdbpass}
+      - TZ=${TZ:-Europe/Stockholm}
+      - MYSQL_DATABASE=bookstackapp
+      - MYSQL_USER=bookstack
+      - MYSQL_PASSWORD=${DB_PASS:-yourdbpass}
+    volumes:
+      - db:/config
+    networks:
+      - bookstack
+
+volumes:
+  config:
+  db:
+
+networks:
+  apps:
+    external: true
+  bookstack:

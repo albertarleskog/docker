@@ -1,0 +1,33 @@
+---
+version: "3"
+
+services:
+  tdarr:
+    container_name: tdarr
+    image: ghcr.io/haveagitgat/tdarr:latest
+    networks:
+      - apps
+    expose:
+      - 8265  # webUI port
+    ports:
+      - 8266:8266  # server port
+    environment:
+      - TZ=${TZ:-Europe/Stockholm}
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - UMASK_SET=002
+      - serverIP=0.0.0.0
+      - serverPort=8266
+      - webUIPort=8265
+      # - internalNode=true
+      # - nodeID=InternalNode
+    volumes:
+      - config:/app
+      - /data/media:/media
+
+volumes:
+  config:
+
+networks:
+  apps:
+    external: true
