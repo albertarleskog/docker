@@ -1,0 +1,13 @@
+---
+version: "3"
+
+services:
+  woodpecker-agent:
+    image: woodpeckerci/woodpecker-agent:latest
+    command: agent
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WOODPECKER_SERVER=${WOODPECKER_SERVER:?}
+      - WOODPECKER_AGENT_SECRET=${WOODPECKER_AGENT_SECRET:?}
