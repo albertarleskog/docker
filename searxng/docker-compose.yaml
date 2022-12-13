@@ -1,5 +1,4 @@
----
-version: '3.7'
+version: '3'
 
 services:
   searxng:
@@ -12,9 +11,9 @@ services:
     expose:
       - 8080
     volumes:
-      - config:/etc/searxng
+      - /volumes/searxng:/etc/searxng
     environment:
-      - SEARXNG_BASE_URL=https://searxng.${DOMAIN:?}/
+      - SEARXNG_BASE_URL=https://searxng.arleskog.se/
     cap_drop:
       - ALL
     cap_add:
@@ -22,10 +21,8 @@ services:
       - SETGID
       - SETUID
       - DAC_OVERRIDE
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.searxng.entrypoints=websecure
-
+    depends_on:
+      - redis
   redis:
     image: redis:alpine
     command: redis-server --save "" --appendonly "no"
@@ -40,9 +37,6 @@ services:
       - SETGID
       - SETUID
       - DAC_OVERRIDE
-
-volumes:
-  config:
 
 networks:
   apps:

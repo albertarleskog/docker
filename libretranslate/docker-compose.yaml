@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  libretranslate:
+    image: libretranslate/libretranslate:latest
+    networks:
+      - apps
+    expose:
+      - 5000
+    environment:
+      - LT_HOST='0.0.0.0'
+      - LT_FRONTEND_LANGUAGE_TARGET='sv'
+
+networks:
+  apps:
+    external: true

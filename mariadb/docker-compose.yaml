@@ -1,0 +1,23 @@
+version: '3.1'
+
+services:
+  db:
+    container_name: mariadb
+    image: mariadb:10
+    expose:
+      - 3306
+    environment:
+      - MYSQL_ROOT_PASSWORD='476726c07fda589a2aa7eb10b45fd3549a45ada0ec5d6a9a5e38f818a2577cc9'
+    volumes:
+      - /volumes/mariadb:/var/lib/mysql
+    command:
+      - "--character-set-server=utf8mb4"
+      - "--collation-server=utf8mb4_unicode_ci"
+      - "--max-connections=1000"
+    networks:
+      - mariadb
+
+
+networks:
+  mariadb:
+    external: true

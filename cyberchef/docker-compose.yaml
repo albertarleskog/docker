@@ -1,18 +1,14 @@
----
 version: '3'
 
 services:
   cc:
-    image: mpepping/cyberchef
+    image: mpepping/cyberchef:latest
     restart: unless-stopped
     container_name: cc
     networks:
       - apps
     expose:
       - 8000
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.cc.entrypoints=websecure
 
 networks:
   apps:
